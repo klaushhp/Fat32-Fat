@@ -97,7 +97,6 @@ PARTITION VolToPart[] = {
 	f_mkdir("0:/dudu");
  	res = f_open(&fil3,"dudu/didi.txt",FA_CREATE_NEW|FA_WRITE|FA_READ);
   	res = f_write(&fil3,"hello,world!\r\n",15,&bw);
-
 	f_close(&fil3);
 
 	return 0;
