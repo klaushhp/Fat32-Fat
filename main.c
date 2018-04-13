@@ -93,11 +93,12 @@ PARTITION VolToPart[] = {
 	f_rename("hello.txt","hi.txt");
 	f_mkdir("0:/dudu");
 #endif
-//	f_mkdir("0:/dudu");
-// 	res = f_open(&fil3,"dudu/didi.txt",FA_CREATE_NEW|FA_WRITE|FA_READ);
-//  res = f_write(&fil3,"hello,world!\r\n",15,&bw);
+#if 0
+	 f_mkdir("0:/dudu");
+ 	res = f_open(&fil3,"dudu/didi.txt",FA_CREATE_NEW|FA_WRITE|FA_READ);
+  	res = f_write(&fil3,"hello,world!\r\n",15,&bw);
 
-//	f_close(&fil3);
-
+	f_close(&fil3);
+#endif
 	return 0;
 }
