@@ -6,7 +6,7 @@
 /* This is an example of glue functions to attach various exsisting      */
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
-
+#include <stdio.h>
 #include "diskio.h"		/* FatFs lower layer API */
 
 /* Definitions of physical drive number for each drive */
@@ -14,6 +14,7 @@
 #define DEV_MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
 #define DEV_USB		2	/* Example: Map USB MSD to physical drive 2 */
 
+FILE *fp;
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -23,32 +24,8 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_status();
-
-		// translate the reslut code here
-
-		return stat;
-	}
-	return STA_NOINIT;
+	
+	return RES_OK;
 }
 
 
@@ -61,32 +38,8 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	DSTATUS stat;
-	int result;
-
-	switch (pdrv) {
-	case DEV_RAM :
-		result = RAM_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_MMC :
-		result = MMC_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-
-	case DEV_USB :
-		result = USB_disk_initialize();
-
-		// translate the reslut code here
-
-		return stat;
-	}
-	return STA_NOINIT;
+    fp = fopen("./test.dat","w+");
+	return RES_OK;
 }
 
 
@@ -103,38 +56,12 @@ DRESULT disk_read (
 )
 {
 	DRESULT res;
-	int result;
 
-	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
+    fseek(fp,sector*512,SEEK_SET);
+    res = fread(buff,count,512,fp);
 
-		result = RAM_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_MMC :
-		// translate the arguments here
-
-		result = MMC_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_USB :
-		// translate the arguments here
-
-		result = USB_disk_read(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-	}
-
-	return RES_PARERR;
+	res = RES_OK;
+	return res;
 }
 
 
@@ -151,38 +78,14 @@ DRESULT disk_write (
 )
 {
 	DRESULT res;
-	int result;
 
-	switch (pdrv) {
-	case DEV_RAM :
-		// translate the arguments here
+	fseek(fp,sector*512,SEEK_SET);
+    res = fwrite(buff,count,512,fp);
 
-		result = RAM_disk_write(buff, sector, count);
+ //   printf("%d bytes are written\n",res);
+	res = RES_OK;
 
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_MMC :
-		// translate the arguments here
-
-		result = MMC_disk_write(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-
-	case DEV_USB :
-		// translate the arguments here
-
-		result = USB_disk_write(buff, sector, count);
-
-		// translate the reslut code here
-
-		return res;
-	}
-
-	return RES_PARERR;
+	return res;
 }
 
 
@@ -199,25 +102,19 @@ DRESULT disk_ioctl (
 {
 	DRESULT res;
 	int result;
+	
+	switch(cmd) {
+	case CTRL_SYNC:
+        res = fflush(fp);
+        return res;
 
-	switch (pdrv) {
-	case DEV_RAM :
+	case GET_SECTOR_COUNT:
+        *((int *)buff) = 2000000;
+		return RES_OK;
 
-		// Process of the command for the RAM drive
-
-		return res;
-
-	case DEV_MMC :
-
-		// Process of the command for the MMC/SD card
-
-		return res;
-
-	case DEV_USB :
-
-		// Process of the command the USB drive
-
-		return res;
+	case GET_BLOCK_SIZE:
+        *((long *)buff) = 512000000;
+		return RES_OK;	
 	}
 
 	return RES_PARERR;
