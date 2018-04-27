@@ -1,5 +1,8 @@
-
+#include <stdio.h>
 #include "integer.h"
+#include "ff.h"
+#include "diskio.h"
+
 
 /* Power off safe log record structure */
 typedef struct {
@@ -54,3 +57,7 @@ typedef struct {
 #define LOG_Count 			1
 #define FAT1_Dirty 			2
 #define FAT2_Dirty  		3
+
+
+
+
